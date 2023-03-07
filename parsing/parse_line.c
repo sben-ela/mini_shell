@@ -31,9 +31,12 @@ t_content	*parseword(char *word, char **env)
 void	ft_getnew(char **split, char **env, int i, t_shell **new)
 {
 	t_content	*content;
+	char		**tmp;
+	int			j;
 
 	while (split[i])
 	{
+		j = 0;
 		content = parseword(split[i], env);
 		split[i] = content->content;
 		if (!ft_strcmp(split[i], ">"))
@@ -49,7 +52,16 @@ void	ft_getnew(char **split, char **env, int i, t_shell **new)
 			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
 			new_redir(parseword(split[++i], env), APPEND)));
 		else
+		{
+			if (!check_edges(split[i]))
+			{
+				tmp = ft_split(split[i], ' ');
+				while(tmp[j])
+					cmd_add_back(&(*new)->cmd, new_cmd(tmp[j++]));
+			}
+			else
 				cmd_add_back(&(*new)->cmd, new_cmd(split[i]));
+		}
 		free(content);
 		i++;
 	}
