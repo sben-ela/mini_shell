@@ -6,7 +6,7 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 15:14:26 by aybiouss          #+#    #+#             */
-/*   Updated: 2023/03/06 16:44:51 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/07 10:16:28 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ t_redire	*redilast(t_redire *lst)
 void	redi_add_back(t_redire **lst, t_redire *new)
 {
 	t_redire	*tmp;
+
 	if (*lst == 0)
 		*lst = new;
 	else

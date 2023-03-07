@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g2
 READ = -L/goinfre/sben-ela/homebrew/opt/readline/lib
 INCLUDE = -I/goinfre/sben-ela/homebrew/opt/readline/include
 PROG = mini_shell

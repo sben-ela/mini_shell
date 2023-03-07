@@ -6,7 +6,7 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 17:36:00 by sben-ela          #+#    #+#             */
-/*   Updated: 2023/03/06 15:30:22 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/07 13:48:33 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,18 @@
 #define		APPEND 5
 #define		DELIMITER 4
 #define		CMD 3
+#define		SINGLE_QUOTE 2
+#define		DOUBLE_QUOTE 1
+#define		WITHOUT_QUOTE 0
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<unistd.h>
 #include	<readline/readline.h>
 #include	<readline/history.h>
 #include	<fcntl.h>
-# include <sys/wait.h>
-# include <sys/errno.h>
-# include <string.h>
+#include	<sys/wait.h>
+#include	<sys/errno.h>
+#include	<string.h>
 
 typedef struct s_env_elem
 {
@@ -81,7 +84,15 @@ typedef	struct	shell
 	struct shell	*next;
 }	t_shell;
 
+typedef	struct content
+{
+	char	*content;
+	int		quotes;
+}	t_content;
+
 //PARSING
+t_redire    *new_redir(t_content *content, int type);
+t_content	*parseword(char *word, char **env);
 void		sigint_handler(int sig);
 t_shell		*parse_line(char *line, char **env);
 char		**full_cmds(t_cmd *cmd);
@@ -90,7 +101,6 @@ char		*ft_strchrr(const char *s, int c);
 char		**ft_split(char const *str, char c);
 char		*parse_redirect(char *line);
 t_redire	*redilast(t_redire *lst);
-t_redire	*new_redir(char *content, int type);
 void		redi_add_back(t_redire **lst, t_redire *new);
 t_cmd		*last_cmd(t_cmd *lst);
 void		cmd_add_back(t_cmd **lst, t_cmd *new);

@@ -10,36 +10,34 @@ void    freedouble(char **args)
     free(args);
 }
 
-t_redire    *new_redir(char *content, int type)
+t_redire    *new_redir(t_content *content, int type)
 {
     t_redire    *new;
 
     new = malloc(sizeof(t_redire));
     if (!new)
         return (0);
-    if (type == 0)
-        new->infile = content;
-    if (type == 1)
-        new->outfile = content;
-    if (type == 4)
+    if (type == INFILE)
     {
-        if (check_edges(content) == 1)
-            new->quotes = 1;
-        else if (check_edges(content) == 2)
-            new->quotes = 2;
-        else
-            new->quotes = 0;
-        if(new->quotes == 1)
-            new->delimiter = ft_strtrim(content, "\"");
-        else if(new->quotes == 2)
-            new->delimiter = ft_strtrim(content, "\'");
-        else
-            new->delimiter = content;
+        new->type = INFILE;
+        new->infile = content->content;
     }
-    if (type == 5)
-        new->outfile = content;
-    if (type != 3)
-        new->type = type;
+    if (type == OUTFILE)
+    {
+        new->type = OUTFILE;
+        new->outfile = content->content;
+    }
+    if (type == DELIMITER)
+    {
+        new->type = DELIMITER;
+        new->quotes = content->quotes;
+        new->delimiter = content->content;
+    }
+    if (type == APPEND)
+    {
+        new->type = APPEND;
+        new->outfile = content->content;
+    }
     new->next = 0;
     return (new);
 }

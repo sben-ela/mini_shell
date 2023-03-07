@@ -13,6 +13,7 @@ void	print_data(t_shell *shell)
 		printf("\n");
 		while(shell->redir)
 		{
+			// printf("%d\n", shell->redir->type);
 			if (shell->redir->type == INFILE)
 				printf("INFILE : %s\n", shell->redir->infile);
 			if (shell->redir->type == OUTFILE)
@@ -29,9 +30,6 @@ void	print_data(t_shell *shell)
 
 void	freedata(t_shell **data)
 {
-	t_shell *tmp;
-
-	tmp = *data;
 	while(*data)
 	{
 		while ((*data)->cmd)
@@ -69,9 +67,12 @@ void	mini_shell(char **env)
 	ev = create_env(env);
 	while (1)
 	{
-		read = readline("\033[0;32mMinishell>> \033[0m");
+		read = readline("\033[1;34m➜  Mini_shell>> \033[0m");
 		if (!read)
+		{
+			printf("exit\n"),
 			exit(0);
+		}
 		add_history(read);
 		if (read[0] && !parse_syntax(read, 0))
 		{
@@ -82,10 +83,14 @@ void	mini_shell(char **env)
 			free(line);
 			free(read);
 			// system("leaks mini_shell");
-			// execute(shell, ev);
 		}
 		else if (read[0])
+		{
+			free(read);
 			printf("syntax error\n");
+		}
+		else
+			free(read);
 	}
 }
 

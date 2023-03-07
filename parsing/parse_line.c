@@ -1,57 +1,56 @@
 #include "../mini_shell.h"
 
-char	*parseword(char *word, char **env)
+t_content	*parseword(char *word, char **env)
 {
-	char	*new_word;
+	t_content	*content;
 
+	content = malloc(sizeof(t_content));
 	if (check_edges(word) == 1)
 	{
-		new_word = get_value(word, env);
-		new_word = handle_param(new_word, '\"');
+		content->quotes = SINGLE_QUOTE;
+		content->content = get_value(word, env);
+		content->content = handle_param(content->content, '\"');
 	}
 	else if (check_edges(word) == 2)
 	{
-		new_word = get_value(word, env);
-		new_word = handle_param(new_word, '\'');
+		content->quotes = DOUBLE_QUOTE;
+		content->content = get_value(word, env);
+		content->content = handle_param(content->content, '\'');
 	}
 	else
 	{
-		new_word = get_value(word, env);
-		new_word = handle_param(new_word, '\'');
-		new_word = handle_param(new_word, '\"');
+		content->quotes = WITHOUT_QUOTE;
+		content->content = get_value(word, env);
+		content->content = handle_param(content->content, '\'');
+		content->content = handle_param(content->content, '\"');
 	}
 	free(word);
-	return (new_word);
+	return (content);
 }
 
 void	ft_getnew(char **split, char **env, int i, t_shell **new)
 {
-	char	**tmp;
-	int		j;
+	t_content	*content;
 
 	while (split[i])
 	{
-		split[i] = parseword(split[i], env);
+		content = parseword(split[i], env);
+		split[i] = content->content;
 		if (!ft_strcmp(split[i], ">"))
-			(free(split[i]), redi_add_back(&(*new)->redir, new_redir(parseword(split[++i], env), OUTFILE)));
+			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			new_redir(parseword(split[++i], env), OUTFILE)));
 		else if (!ft_strcmp(split[i], "<"))
-			(free(split[i]), redi_add_back(&(*new)->redir, new_redir(parseword(split[++i], env), INFILE)));
+			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			new_redir(parseword(split[++i], env), INFILE)));
 		else if (!ft_strcmp(split[i], "<<"))
-			(free(split[i]), redi_add_back(&(*new)->redir, new_redir(parseword(split[++i], env), DELIMITER)));
+			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			new_redir(parseword(split[++i], env), DELIMITER)));
 		else if (!ft_strcmp(split[i], ">>"))
-			(free(split[i]), redi_add_back(&(*new)->redir, new_redir(parseword(split[++i], env), APPEND)));
+			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			new_redir(parseword(split[++i], env), APPEND)));
 		else
-		{
-			if (check_edges(split[i]))
-			{
-				tmp = ft_split(split[i], ' ');
-				j = 0;
-				while (tmp[j])
-					cmd_add_back(&(*new)->cmd, new_cmd(tmp[j++]));
-			}
-			else
 				cmd_add_back(&(*new)->cmd, new_cmd(split[i]));
-		}
+		free(content);
 		i++;
 	}
 }
@@ -86,10 +85,7 @@ t_shell	*parse_line(char *line, char **env)
 	t_shell *new;
 	int	    pipe;
 	int	    i;
-	(void)env;
-	(void)line;
-	(void)pipe;
-	(void)new;
+
 	i = -1;
 	shell = 0;
 	args = ft_split_v2(line, '|');
@@ -115,8 +111,8 @@ void	sigint_handler(int sig)
 	if(sig == SIGINT)
 	{
 		write(1, "\n", 1);
-		// rl_on_new_line();
-		// rl_replace_line("", 1);
+		rl_on_new_line();
+		rl_replace_line("", 1);
 		rl_redisplay();
 	}
 	else if(sig == SIGQUIT)
