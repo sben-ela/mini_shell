@@ -42,11 +42,11 @@ int	cmd_size(t_cmd *cmds)
 
 int check_edges(char *str)
 {
-	if (!str[0])
-	{
-		printf("send null to check edges\n");
-		return (0);
-	}
+	//if (!str[0])
+	//{
+	//	printf("send null to check edges\n");
+	//	return (0);
+	//}
 	if (str[0] == '\"' && str[ft_strlen(str) - 1] == '\"')
 		return (1);
 	if (str[0] == '\'' && str[ft_strlen(str) - 1] == '\'')

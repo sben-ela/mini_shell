@@ -6,7 +6,7 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 17:36:00 by sben-ela          #+#    #+#             */
-/*   Updated: 2023/03/07 13:48:33 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/08 12:37:57 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,13 @@ typedef	struct content
 	char	*content;
 	int		quotes;
 }	t_content;
+
+typedef struct s_data
+{
+	int	status;
+}	t_data;
+
+t_data	*global;
 
 //PARSING
 t_redire    *new_redir(t_content *content, int type);

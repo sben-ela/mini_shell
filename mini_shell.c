@@ -13,7 +13,6 @@ void	print_data(t_shell *shell)
 		printf("\n");
 		while(shell->redir)
 		{
-			// printf("%d\n", shell->redir->type);
 			if (shell->redir->type == INFILE)
 				printf("INFILE : %s\n", shell->redir->infile);
 			if (shell->redir->type == OUTFILE)
@@ -26,17 +25,23 @@ void	print_data(t_shell *shell)
 		}
 		shell = shell->next;
 	}
+	// printf("STATUS : %d\n", global->status);
 }
 
 void	freedata(t_shell **data)
 {
+	t_cmd		*tmp1;
+	t_shell		*tmp2;
+	t_redire	*tmp3;
+
 	while(*data)
 	{
 		while ((*data)->cmd)
 		{
 			free((*data)->cmd->cmd);
-			free((*data)->cmd);
+			tmp1 = (*data)->cmd;
 			(*data)->cmd = (*data)->cmd->next;
+			free(tmp1);
 		}
 		while((*data)->redir)
 		{
@@ -48,13 +53,24 @@ void	freedata(t_shell **data)
 				free((*data)->redir->delimiter);
 			else if ((*data)->redir->type == APPEND)
 				free((*data)->redir->outfile);
-			free((*data)->redir);
+			tmp3= (*data)->redir;
 			(*data)->redir = (*data)->redir->next;
+			free(tmp3);
 		}
 		free((*data)->cmds);
-		free(*data);
+		tmp2 = *data;
 		(*data) = (*data)->next;
+		free(tmp2);
 	}
+}
+
+t_data	*init_data()
+{
+	t_data	*global;
+
+	global = malloc(sizeof(t_data));
+	global->status = 1;
+	return (global);
 }
 
 void	mini_shell(char **env)
@@ -64,6 +80,7 @@ void	mini_shell(char **env)
 	t_shell *shell;
 	t_env	*ev;
 
+	global = init_data();
 	ev = create_env(env);
 	while (1)
 	{
@@ -78,8 +95,9 @@ void	mini_shell(char **env)
 		{
 			line = parse_read(read);
 			shell = parse_line(line, ev->env);
-			print_data(shell);
+			// print_data(shell);
 			freedata(&shell);
+			// execute(shell, ev);
 			free(line);
 			free(read);
 			// system("leaks mini_shell");

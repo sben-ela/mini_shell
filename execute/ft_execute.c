@@ -6,7 +6,7 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 18:28:01 by aybiouss          #+#    #+#             */
-/*   Updated: 2023/03/05 20:08:58 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/08 13:46:19 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,15 +298,15 @@ void	open_heredocs(t_shell *shell, t_env *env)
 
 int	exec_builtins_execve(t_shell *shell, t_env *env)
 {
-	// exec_redir(shell->redir, &shell->cmd->fd, env->env);
-	open_heredocs(shell, env);
-	// if (check_builtins(shell->cmds[0]) == 1)
-	// 	execute_builtin(shell, env);
-	// else
-	// {
-	// 	// printf("1zid\n");
-	// 	ft_execute(shell, env->env);
-	// }
+	exec_redir(shell->redir, &shell->cmd->fd);
+	// open_heredocs(shell, env);
+	if (check_builtins(shell->cmds[0]) == 1)
+		execute_builtin(shell, env);
+	else
+	{
+		// printf("1zid\n");
+		ft_execute(shell, env->env);
+	}
 	return (0);
 }
 

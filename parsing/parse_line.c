@@ -28,40 +28,47 @@ t_content	*parseword(char *word, char **env)
 	return (content);
 }
 
+void	full_cmd(t_shell **new, char *word)
+{
+	char	**tmp;
+	int		j;
+
+	j = 0;
+	if (!check_edges(word))
+	{
+		tmp = ft_split_v2(word, ' ');
+		free(word);
+		while(tmp[j])
+			cmd_add_back(&(*new)->cmd, new_cmd(tmp[j++]));
+		free(tmp);
+	}
+	else
+		cmd_add_back(&(*new)->cmd, new_cmd(word));
+}
+
 void	ft_getnew(char **split, char **env, int i, t_shell **new)
 {
 	t_content	*content;
-	char		**tmp;
-	int			j;
+
 
 	while (split[i])
 	{
-		j = 0;
 		content = parseword(split[i], env);
 		split[i] = content->content;
 		if (!ft_strcmp(split[i], ">"))
-			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			(free(split[i]), redi_add_back(&(*new)->redir,
 			new_redir(parseword(split[++i], env), OUTFILE)));
 		else if (!ft_strcmp(split[i], "<"))
-			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			(free(split[i]), redi_add_back(&(*new)->redir,
 			new_redir(parseword(split[++i], env), INFILE)));
 		else if (!ft_strcmp(split[i], "<<"))
-			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			(free(split[i]), redi_add_back(&(*new)->redir,
 			new_redir(parseword(split[++i], env), DELIMITER)));
 		else if (!ft_strcmp(split[i], ">>"))
-			(free(split[i]), free(content), redi_add_back(&(*new)->redir,
+			(free(split[i]), redi_add_back(&(*new)->redir,
 			new_redir(parseword(split[++i], env), APPEND)));
 		else
-		{
-			if (!check_edges(split[i]))
-			{
-				tmp = ft_split(split[i], ' ');
-				while(tmp[j])
-					cmd_add_back(&(*new)->cmd, new_cmd(tmp[j++]));
-			}
-			else
-				cmd_add_back(&(*new)->cmd, new_cmd(split[i]));
-		}
+			full_cmd(new, split[i]);
 		free(content);
 		i++;
 	}
@@ -124,7 +131,7 @@ void	sigint_handler(int sig)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		rl_replace_line("", 1);
+		//rl_replace_line("", 1);
 		rl_redisplay();
 	}
 	else if(sig == SIGQUIT)

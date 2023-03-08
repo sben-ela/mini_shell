@@ -39,6 +39,7 @@ t_redire    *new_redir(t_content *content, int type)
         new->outfile = content->content;
     }
     new->next = 0;
+    free(content);
     return (new);
 }
 
