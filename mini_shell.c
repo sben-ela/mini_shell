@@ -25,7 +25,7 @@ void	print_data(t_shell *shell)
 		}
 		shell = shell->next;
 	}
-	// printf("STATUS : %d\n", global->status);
+	// printf("STATUS : %d\n", status);
 }
 
 void	freedata(t_shell **data)
@@ -64,49 +64,37 @@ void	freedata(t_shell **data)
 	}
 }
 
-t_data	*init_data()
-{
-	t_data	*global;
-
-	global = malloc(sizeof(t_data));
-	global->status = 1;
-	return (global);
-}
-
 void	mini_shell(char **env)
 {
-	char *read;
-	char *line;
 	t_shell *shell;
 	t_env	*ev;
+	char	*read;
+	char	*line;
 
-	global = init_data();
 	ev = create_env(env);
 	while (1)
 	{
-		read = readline("\033[1;34m➜  Mini_shell>> \033[0m");
+		read = readline("\033[1;34m➜  Mini_shell ✗ \033[0m");
 		if (!read)
 		{
 			printf("exit\n"),
 			exit(0);
 		}
 		add_history(read);
-		if (read[0] && !parse_syntax(read, 0))
+		status = parse_syntax(read, 0);
+		if (read[0] && !status)
 		{
 			line = parse_read(read);
-			shell = parse_line(line, ev->env);
+			shell = parse_line(line, env);
 			// print_data(shell);
+			execute(shell, ev);
 			freedata(&shell);
-			// execute(shell, ev);
 			free(line);
 			free(read);
 			// system("leaks mini_shell");
 		}
 		else if (read[0])
-		{
-			free(read);
-			printf("syntax error\n");
-		}
+			(free(read), printf("syntax error\n"));
 		else
 			free(read);
 	}
@@ -116,6 +104,7 @@ int main(int ac, char **av, char **env)
 {
 	(void)av;
 
+	status = 0;
 	if(ac != 1)
 	{
 		printf("invalid number of argument\n");

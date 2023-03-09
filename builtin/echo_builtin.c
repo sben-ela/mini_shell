@@ -96,7 +96,6 @@ int	echo_builtin(char **cmd)
 	int	f = 0;
 	int	i = 1;
 
-	// printf("hh : %s ", cmd[1]);
 	if (!cmd[1])
 	{
 		write(1, "\n", 1);
@@ -107,7 +106,7 @@ int	echo_builtin(char **cmd)
 		while (cmd[1][i] == 'n')
 			i++;
 		if (cmd[1][i] && cmd[1][i] != 'n')
-				f = 0;
+			f = 0;
 		else
 			f = 1;
 	}
@@ -117,8 +116,6 @@ int	echo_builtin(char **cmd)
 	{
 		if (cmd[j])
 			echo(cmd, j);
-		// size_t len = strlen(cmd[j]);
-        // write(STDOUT_FILENO, cmd[j], len);
 		if (!cmd[j + 1] && f)
 			ft_putchar('\0');
 		else if (!cmd[j + 1] && !f)
@@ -126,7 +123,8 @@ int	echo_builtin(char **cmd)
 		else
 			ft_putchar(' ');
 	}
-	return (1);
+	status = EXIT_SUCCESS;
+	return (EXIT_SUCCESS);
 }
 
 // \\\\0 and stuff itgado

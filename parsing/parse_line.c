@@ -8,19 +8,19 @@ t_content	*parseword(char *word, char **env)
 	if (check_edges(word) == 1)
 	{
 		content->quotes = SINGLE_QUOTE;
-		content->content = get_value(word, env);
+		content->content = expand(word, env);
 		content->content = handle_param(content->content, '\"');
 	}
 	else if (check_edges(word) == 2)
 	{
 		content->quotes = DOUBLE_QUOTE;
-		content->content = get_value(word, env);
+		content->content = expand(word, env);
 		content->content = handle_param(content->content, '\'');
 	}
 	else
 	{
 		content->quotes = WITHOUT_QUOTE;
-		content->content = get_value(word, env);
+		content->content = expand(word, env);
 		content->content = handle_param(content->content, '\'');
 		content->content = handle_param(content->content, '\"');
 	}
@@ -28,22 +28,22 @@ t_content	*parseword(char *word, char **env)
 	return (content);
 }
 
-void	full_cmd(t_shell **new, char *word)
+void	full_cmd(t_shell **new, t_content *content)
 {
 	char	**tmp;
 	int		j;
 
 	j = 0;
-	if (!check_edges(word))
+	if (content->quotes == WITHOUT_QUOTE)
 	{
-		tmp = ft_split_v2(word, ' ');
-		free(word);
+		tmp = ft_split(content->content, ' ');
+		free(content->content);
 		while(tmp[j])
 			cmd_add_back(&(*new)->cmd, new_cmd(tmp[j++]));
 		free(tmp);
 	}
 	else
-		cmd_add_back(&(*new)->cmd, new_cmd(word));
+		cmd_add_back(&(*new)->cmd, new_cmd(content->content));
 }
 
 void	ft_getnew(char **split, char **env, int i, t_shell **new)
@@ -68,7 +68,7 @@ void	ft_getnew(char **split, char **env, int i, t_shell **new)
 			(free(split[i]), redi_add_back(&(*new)->redir,
 			new_redir(parseword(split[++i], env), APPEND)));
 		else
-			full_cmd(new, split[i]);
+			full_cmd(new, content);
 		free(content);
 		i++;
 	}
@@ -117,7 +117,7 @@ t_shell	*parse_line(char *line, char **env)
 	{
 		pipe = 0;
 		if(args[i + 1])
-			pipe = 1;   
+			pipe = PIPE;
 		new = ft_lstnew(args[i], i, env, pipe);
 		ft_lstadd_back(&shell, new);
 	}
@@ -131,7 +131,7 @@ void	sigint_handler(int sig)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		//rl_replace_line("", 1);
+		rl_replace_line("", 1);
 		rl_redisplay();
 	}
 	else if(sig == SIGQUIT)

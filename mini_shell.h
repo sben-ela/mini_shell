@@ -1,25 +1,13 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   mini_shell.h                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/08 17:36:00 by sben-ela          #+#    #+#             */
-/*   Updated: 2023/03/08 12:37:57 by sben-ela         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 
 # ifndef MINI_SHELL_H
 # define  MINI_SHELL_H
 
-#define		PIPE 2
 #define		STRING 3
 #define		INFILE 0
 #define		OUTFILE 1
 #define		APPEND 5
 #define		DELIMITER 4
+#define		PIPE 1
 #define		CMD 3
 #define		SINGLE_QUOTE 2
 #define		DOUBLE_QUOTE 1
@@ -33,6 +21,9 @@
 #include	<sys/wait.h>
 #include	<sys/errno.h>
 #include	<string.h>
+#include	<dirent.h>
+
+int	status;
 
 typedef struct s_env_elem
 {
@@ -90,14 +81,8 @@ typedef	struct content
 	int		quotes;
 }	t_content;
 
-typedef struct s_data
-{
-	int	status;
-}	t_data;
-
-t_data	*global;
-
 //PARSING
+// t_redire    *new_redir(t_content *content, int type);
 t_redire    *new_redir(t_content *content, int type);
 t_content	*parseword(char *word, char **env);
 void		sigint_handler(int sig);
@@ -159,7 +144,7 @@ void		ft_putstr_fd(char *s, int fd);
 int			parse_syntax(char *line, char c);
 int			count_single_quotes(char *line);
 int			count_double_quotes(char *line);
-char		*get_value(char *str,char **env);
+char		*expand(char *str,char **env);
 int			ft_isalnum(int c);
 char		*ft_strnstr(const char *haystack, const char *needle, size_t len);
 char		*ft_strdup(char *source);
@@ -172,22 +157,22 @@ int			ft_strchr(char const *s, int c);
 char		*ft_strtrime(char const *s1, char const *set);
 	
 //EXECUTION
+void	exec_redir(t_shell *shell);
 void		execute(t_shell *shell, t_env *env);
-void		parent(t_shell *shell, int fd[2]);
-void		child(t_shell *shell, t_env *env, int fd[2]);
+void	ft_execute(t_shell *shell, t_env *env);
+int	check_builtins(char *cmd);
+int exec_redir_in(char *infile, int *in);
 void		execute_cmd(t_shell *shell, char **env);
-void		dup_close(int *fd1, int fd2);
-int			exec_builtins_execve(t_shell *shell, t_env *env);
+void check_fd(t_cmd *cmd);
 int			ft_lstsize(t_shell *lst);
-void		execute_builtin(t_shell *shell, t_env *env);
+void	dup_close(t_fd *fd);
 void		ft_which_cmd(char **cmd, t_env *env);
 int			check_builtins(char *cmd);
-void		ft_execute(t_shell *shell, char **env);
+void	execute_cmd(t_shell *shell, char **env);
 char		**get_paths(char **env, t_shell *shell);
 char		*get_cmd(char **paths, char *cmd);
 void		error(char *str, int n);
 void		check_fd(t_cmd *cmd);
-void		exec_redir(t_redire *redir, t_fd *fd);
 int			exec_redir_in(char *infile, int *in);
 void		free_paths(char **paths);
 void		here_doc(t_redire *redir, char **env);

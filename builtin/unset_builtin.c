@@ -6,7 +6,7 @@
 /*   By: aybiouss <aybiouss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 13:09:29 by aybiouss          #+#    #+#             */
-/*   Updated: 2023/03/03 15:08:59 by aybiouss         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:44:42 by aybiouss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	unset_env(char *cmd, t_env *env)
 	{
 		printf("minishell: unset: `%s`: not a valid identifier\n",
 			cmd);
-		//status
+		status = EXIT_FAILURE;
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
@@ -43,9 +44,10 @@ int	unset_builtin(char **cmd, t_env *env)
 		i++;
 	}
 	env->env = convert_array(env);
-	return (1); //status hnayya succesfully
+	status = EXIT_SUCCESS;
+	return (status); //status hnayya succesfully
 }
-//STATUS needed !
+//status needed !
 
 // int	main(int ac, char **av, char **env)
 // {
