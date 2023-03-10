@@ -82,7 +82,6 @@ typedef	struct content
 }	t_content;
 
 //PARSING
-// t_redire    *new_redir(t_content *content, int type);
 void		mini_shell(t_env *ev, t_shell *shell, char *read, char *line);
 t_redire    *new_redir(t_content *content, int type);
 t_content	*parseword(char *word, char **env);

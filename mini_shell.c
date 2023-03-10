@@ -68,6 +68,9 @@ void	freedata(t_shell **data, char **line, char **read)
 
 void	mini_shell(t_env *ev, t_shell *shell, char *read, char *line)
 {
+	// (void)shell;
+	// (void)line;
+	// (void)ev;
 	while (1)
 	{
 		read = readline("\033[1;34m➜  Mini_shell ✗ \033[0m");
@@ -85,7 +88,7 @@ void	mini_shell(t_env *ev, t_shell *shell, char *read, char *line)
 			// print_data(shell);
 			execute(shell, ev);
 			freedata(&shell, &line, &read);
-			// system("leaks mini_shell");
+			system("leaks mini_shell");
 		}
 		else if (read[0])
 			(free(read), printf("syntax error\n"));

@@ -6,7 +6,7 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 11:01:50 by sben-ela          #+#    #+#             */
-/*   Updated: 2023/03/10 11:50:37 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/10 17:34:41 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int parse(char **split_line, char *line)
 
     i = 0;
     string = malloc(1);
+    string[0] = '\0';
     while(split_line[i])
         string = ft_strjoinfree(string, split_line[i++]);
     if (parse_redir(string, 0))
@@ -86,15 +87,18 @@ int parse(char **split_line, char *line)
 		}
 		i++;
 	}
+    free(string);
 	freedouble(split_line);
     return (0);
 }
 
 int parse_syntax(char *line, char c)
 {
-    int i = 0;
+    int     i;
     char    *trimmed_line;
+    char    **split_string;
 
+    i = 0;
     if (handle_pipes(line) || count_single_quotes(line) || count_double_quotes(line))
         return (1);
     trimmed_line = ft_strdup(line);
@@ -102,7 +106,8 @@ int parse_syntax(char *line, char c)
         trimmed_line = ft_strtrimfree(trimmed_line, "\"");
     if (count_single_quotes(line))
         trimmed_line = ft_strtrimfree(trimmed_line, "\'");
-    if (parse(ft_split(trimmed_line, ' '), trimmed_line))
+    split_string = ft_split(trimmed_line, ' ');
+    if (parse(split_string, trimmed_line))
     {
         free(trimmed_line);
         return (1);

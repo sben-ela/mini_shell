@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset_builtin.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aybiouss <aybiouss@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 13:09:29 by aybiouss          #+#    #+#             */
-/*   Updated: 2023/03/08 19:44:42 by aybiouss         ###   ########.fr       */
+/*   Updated: 2023/03/10 15:04:59 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	unset_builtin(char **cmd, t_env *env)
 	while (cmd[i])
 	{
 		unset_env(cmd[i], env);
-		free(cmd[i]);
+		// free(cd[i]);
 		i++;
 	}
 	env->env = convert_array(env);
