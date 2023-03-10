@@ -6,7 +6,7 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 18:28:01 by aybiouss          #+#    #+#             */
-/*   Updated: 2023/03/09 14:25:35 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/09 15:57:04 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ void	ft_execute(t_shell *shell, t_env *env)
 			ft_which_cmd(shell->cmds, env);
 		else
 			execute_cmd(shell, env->env);
+		exit(EXIT_SUCCESS);
 	}
 	if (shell->cmd->fd.in != 0)
 		close(shell->cmd->fd.in);

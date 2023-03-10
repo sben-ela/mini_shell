@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_line.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/09 17:19:14 by sben-ela          #+#    #+#             */
+/*   Updated: 2023/03/10 14:26:36 by sben-ela         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../mini_shell.h"
 
 t_content	*parseword(char *word, char **env)
@@ -38,7 +50,7 @@ void	full_cmd(t_shell **new, t_content *content)
 	{
 		tmp = ft_split(content->content, ' ');
 		free(content->content);
-		while(tmp[j])
+		while (tmp[j])
 			cmd_add_back(&(*new)->cmd, new_cmd(tmp[j++]));
 		free(tmp);
 	}
@@ -49,7 +61,6 @@ void	full_cmd(t_shell **new, t_content *content)
 void	ft_getnew(char **split, char **env, int i, t_shell **new)
 {
 	t_content	*content;
-
 
 	while (split[i])
 	{
@@ -85,10 +96,13 @@ t_shell	*ft_lstnew(char *content, int index, char **env, int pipe)
 	new->cmd = 0;
 	new->redir = 0; 
 	split = ft_split_v2(content, ' ');
-	if(!split)
+	if (!split)
 		return (0);
 	ft_getnew(split, env, 0, &new);
-	new->type = 3;
+	if (!new->cmd)
+		new->type = 0;
+	else
+		new->type = 3;
 	new->pipe = pipe;
 	new->index = index;
 	new->next = 0;
@@ -127,13 +141,13 @@ t_shell	*parse_line(char *line, char **env)
 
 void	sigint_handler(int sig)
 {
-	if(sig == SIGINT)
+	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		rl_replace_line("", 1);
+		// rl_replace_line("", 1);
 		rl_redisplay();
 	}
-	else if(sig == SIGQUIT)
-			return ;
+	else if (sig == SIGQUIT)
+		return ;
 }

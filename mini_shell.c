@@ -28,12 +28,14 @@ void	print_data(t_shell *shell)
 	// printf("STATUS : %d\n", status);
 }
 
-void	freedata(t_shell **data)
+void	freedata(t_shell **data, char **line, char **read)
 {
 	t_cmd		*tmp1;
 	t_shell		*tmp2;
 	t_redire	*tmp3;
 
+	free(*line);
+	free(*read);
 	while(*data)
 	{
 		while ((*data)->cmd)
@@ -64,33 +66,25 @@ void	freedata(t_shell **data)
 	}
 }
 
-void	mini_shell(char **env)
+void	mini_shell(t_env *ev, t_shell *shell, char *read, char *line)
 {
-	t_shell *shell;
-	t_env	*ev;
-	char	*read;
-	char	*line;
-
-	ev = create_env(env);
 	while (1)
 	{
 		read = readline("\033[1;34m➜  Mini_shell ✗ \033[0m");
 		if (!read)
-		{
-			printf("exit\n"),
-			exit(0);
-		}
+			(printf("exit\n"),exit(0));
 		add_history(read);
 		status = parse_syntax(read, 0);
 		if (read[0] && !status)
 		{
-			line = parse_read(read);
-			shell = parse_line(line, env);
+			line = malloc(ft_strlen(read) + 1 + (count_redirect(read) * 2));
+			if (!line)
+				return ;
+			line = parse_read(read, line, 0, 0);
+			shell = parse_line(line, ev->env);
 			// print_data(shell);
 			execute(shell, ev);
-			freedata(&shell);
-			free(line);
-			free(read);
+			freedata(&shell, &line, &read);
 			// system("leaks mini_shell");
 		}
 		else if (read[0])
@@ -103,8 +97,10 @@ void	mini_shell(char **env)
 int main(int ac, char **av, char **env)
 {
 	(void)av;
+	t_env	*ev;
 
 	status = 0;
+	ev = create_env(env);
 	if(ac != 1)
 	{
 		printf("invalid number of argument\n");
@@ -112,6 +108,6 @@ int main(int ac, char **av, char **env)
 	}
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, sigint_handler);
-	mini_shell(env);
+	mini_shell(ev, 0, 0, 0);
 	return 0;
 }

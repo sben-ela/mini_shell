@@ -6,80 +6,11 @@
 /*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 11:01:50 by sben-ela          #+#    #+#             */
-/*   Updated: 2023/03/09 14:59:30 by sben-ela         ###   ########.fr       */
+/*   Updated: 2023/03/10 11:50:37 by sben-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini_shell.h"
-
-// int handle_pipes(char *line)
-// {
-// 	char *str;
-
-// 	if (count_char(line, '\"') == ft_strlen(line) || count_char(line, '\'') == ft_strlen(line))
-// 		return (1);
-// 	str = ft_strtrim(line, " ");
-// 	if (str[0] == '|' || str[ft_strlen(str) - 1] == '|')
-// 		return (1);
-// 	return (0);
-// }
-
-// int parse_redir(char*	line, int	i)
-// {
-// 	while(line[i])
-// 	{
-//     	if (line[i] == '<')
-// 		{
-// 			i++;
-// 			while (line[i] == ' ')
-// 				i++;
-// 			if (!line[i] || (line[i - 1] == ' ' && line[i] == '<')
-// 				|| line[i] == '>'|| (line[i] == '<' && !line[i + 1]) 
-// 				|| (line[i] == '<' && line[i + 1] == '<'))
-// 				return (1);
-// 		}
-// 		if (line[i] == '>')
-// 		{
-// 			i++;
-// 			while (line[i] == ' ')
-// 				i++;
-// 			if ((line[i - 1] == ' ' && line[i] == '>') || line[i] == '<'
-// 				|| !line[i] || (line[i] == '>' && !line[i + 1]) 
-// 				|| (line[i] == '>' && line[i + 1] == '>'))
-// 				return (1);
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
-
-// int	parse_syntax(char *line, char c)
-// {
-// 	static int i;
-
-// 	if(handle_pipes(line) || count_single_quotes(line) || count_double_quotes(line))
-// 		return (1);
-// 	line = ft_strtrim(line, "\"");
-// 	line = ft_strtrim(line, "\'");
-// 	if (parse_redir(line, 0))
-// 		return (1);
-// 	while (line[i])
-// 	{
-// 		if(line[i] == '\'' || line[i] == '\"')
-//     	{
-//     	    c = line[i++];
-//     	    while(line[i] && line[i++] != c);
-//     	}
-// 		if(line[i] == '|')
-// 		{
-// 			while(line[++i] == ' ');
-// 			if(!line[i] || line[i] == '|')
-// 				return (1);
-// 		}
-// 		i++;
-// 	}
-// 	return(0);
-// }
 
 int handle_pipes(char *line)
 {
@@ -106,8 +37,6 @@ int parse_redir(char *line, int i)
         if (line[i] == '<')
 		{
             i++;
-            while (line[i] == ' ')
-                i++;
             if (!line[i] || (line[i - 1] == ' ' && line[i] == '<') ||
                 line[i] == '>' || (line[i] == '<' && !line[i + 1]) ||
                 (line[i] == '<' && line[i + 1] == '<'))
@@ -116,8 +45,6 @@ int parse_redir(char *line, int i)
         if (line[i] == '>')
 		{
             i++;
-            while (line[i] == ' ')
-                i++;
             if ((line[i - 1] == ' ' && line[i] == '>') || line[i] == '<' ||
                 !line[i] || (line[i] == '>' && !line[i + 1]) ||
                 (line[i] == '>' && line[i + 1] == '>'))
@@ -125,6 +52,41 @@ int parse_redir(char *line, int i)
         }
         i++;
     }
+    return (0);
+}
+
+int parse(char **split_line, char *line)
+{
+    char *string;
+    int i;
+
+    i = 0;
+    string = malloc(1);
+    while(split_line[i])
+        string = ft_strjoinfree(string, split_line[i++]);
+    if (parse_redir(string, 0))
+	{
+		freedouble(split_line);
+        return (1);
+	}
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '>' || line[i] == '<')
+		{
+			i++;
+			while (line[i] == ' ')
+				i++;
+			if ((line[i] == '>' || line[i] == '<') && line[i - 1] == ' ')
+			{
+				freedouble(split_line);
+				return (1);
+			}
+			i++;
+		}
+		i++;
+	}
+	freedouble(split_line);
     return (0);
 }
 
@@ -140,7 +102,7 @@ int parse_syntax(char *line, char c)
         trimmed_line = ft_strtrimfree(trimmed_line, "\"");
     if (count_single_quotes(line))
         trimmed_line = ft_strtrimfree(trimmed_line, "\'");
-    if (parse_redir(trimmed_line, 0))
+    if (parse(ft_split(trimmed_line, ' '), trimmed_line))
     {
         free(trimmed_line);
         return (1);

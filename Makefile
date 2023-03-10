@@ -1,9 +1,9 @@
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g2
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g2
 READ = -L/goinfre/sben-ela/homebrew/opt/readline/lib
 INCLUDE = -I/goinfre/sben-ela/homebrew/opt/readline/include
 PROG = mini_shell
 LIBFT = Libft/libft.a
-PARSING = parse_redirect.c  handle_quotes.c  expanding.c  parse.c parse_read.c parse_line.c
+PARSING = handle_quotes.c  expanding.c  parse.c parse_read.c parse_line.c
 BUILTIN = cd_builtin.c echo_builtin.c env_builtin.c exit_builtin.c export_builtin.c pwd_builtin.c unset_builtin.c
 UTILS = env_utils.c  environment.c  ft_error.c  ft_split_v2.c utils1.c utils2.c utils3.c
 EXECUTE = ft_execute.c

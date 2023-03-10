@@ -83,6 +83,7 @@ typedef	struct content
 
 //PARSING
 // t_redire    *new_redir(t_content *content, int type);
+void		mini_shell(t_env *ev, t_shell *shell, char *read, char *line);
 t_redire    *new_redir(t_content *content, int type);
 t_content	*parseword(char *word, char **env);
 void		sigint_handler(int sig);
@@ -97,7 +98,7 @@ void		redi_add_back(t_redire **lst, t_redire *new);
 t_cmd		*last_cmd(t_cmd *lst);
 void		cmd_add_back(t_cmd **lst, t_cmd *new);
 t_cmd		*new_cmd(char *content);
-char 		*parse_read(char *read);
+char	*parse_read(char *read, char *line, int i, int j);
 int			check_edges(char *str);
 
 // ENV utils

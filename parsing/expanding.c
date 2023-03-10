@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expanding.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sben-ela <sben-ela@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/09 17:19:18 by sben-ela          #+#    #+#             */
+/*   Updated: 2023/03/09 17:22:15 by sben-ela         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../mini_shell.h"
 
 int getend(char *str)
@@ -47,6 +59,7 @@ char	*char_join(char *str, char c)
 {
 	char	*dst;
 	int		i;	
+
 	i = 0;
 	if (!str)
 	    return(0);
@@ -59,7 +72,7 @@ char	*char_join(char *str, char c)
 	dst[i++] = c;
 	dst[i] = '\0';
 	free(str);
-	return(dst);
+	return (dst);
 }
 
 char    *get_value(char **str, char **string, char **env)
@@ -71,16 +84,16 @@ char    *get_value(char **str, char **string, char **env)
 	    value = ft_itoa(status/256), (*str)++, (*str)++;
 	else
 	{
-	var = ft_substr(*str, 1, getend(*str));
-	if(!var[0])
-	    value = ft_strdup("$");
-	else
-	    value = find_value(var, env);
-	*str += ft_strlen(var) + 1;
-	free(var);
+		var = ft_substr(*str, 1, getend(*str));
+		if (!var[0])
+		    value = ft_strdup("$");
+		else
+		    value = find_value(var, env);
+		*str += ft_strlen(var) + 1;
+		free(var);
 	}
 	*string = ft_strjoinfree(*string, value);
-	if (!ft_strcmp(value, "\n"))
+	if (!ft_strcmp(value, "\n") || !ft_strcmp(value, "$"))
 	    free(value);
 	return (value);
 }
@@ -89,18 +102,18 @@ char	*expand(char *str, char **env)
 {
 	char	*string;
 	char	*value;
-	int p;
+	int 	quote;
 
-	p = 0;
+	quote = 0;
 	string = malloc(1);
 	string[0] = 0;
 	while (*str)
 	{
 		if (*str == '\"')
-			p = 1;
+			quote = DOUBLE_QUOTE;
 		if (*str == '$')
 			value = get_value(&str, &string, env);
-		else if (*str == '\'' && p != 1)
+		else if (*str == '\'' && quote != DOUBLE_QUOTE)
 		{
 			str++;
 			while (*str && *str != '\'')
@@ -109,8 +122,8 @@ char	*expand(char *str, char **env)
 		}
 		else
 			(string = char_join(string, *str), str++);
-		if (p == 1 && *str == '\"')
-			p = 0;
+		if (quote == DOUBLE_QUOTE && *str == '\"')
+			quote = 0;
 	}
 	return (string);
 }
